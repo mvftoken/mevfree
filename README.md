@@ -1,4 +1,4 @@
-# MEVFree CA
+# MEVFree Smart Contract
 # https://www.mevfree.io/
 
 Instructions.
