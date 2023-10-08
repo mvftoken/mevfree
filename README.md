@@ -12,6 +12,6 @@ Change the following variables before deployment.
     uint256 private _decimalsMul = {decimals};
 
 
-Official CA: 0x7f66edadef1f90399c75c6bb9eb58ba4818a41cd
+Official CA: 0xe699e60364b1d68ea36621048c864aba555da479
 Official Website: https://www.mevfree.io/
 Official Telegram: https://t.me/mvftoken
