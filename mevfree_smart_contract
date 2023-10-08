@@ -9,7 +9,6 @@ Example Variables.
     uint8 private _decimals = {decimals};
     uint256 private _decimalsMul = {decimals};
 */
-
 pragma solidity ^0.8.5;
 
 abstract contract Context {
@@ -224,7 +223,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-contract Token is Context, IERC20Upgradeable {
+contract {safeName} is Context, IERC20Upgradeable {
     // Ownership moved to in-contract for customizability.
     address private _owner;
 
@@ -359,8 +358,14 @@ contract Token is Context, IERC20Upgradeable {
         _approve(_msgSender(), _routerAddress, MAX);
         _approve(address(this), _routerAddress, MAX);
 
-        _marketWallet = payable(owner());
-        _devWallet = payable(owner());
+        _marketWallet = payable(_owner);
+        _devWallet = payable(_owner);
+    }
+
+    receive() external payable {}
+
+    function LaunchToken() external onlyOwner {
+        require(!contractInitialized, "Already initialized");
 
         _tTotal = _startingSupply * (10**_decimalsMul);
         _rTotal = (MAX - (MAX % _tTotal));
@@ -382,8 +387,11 @@ contract Token is Context, IERC20Upgradeable {
         contractInitialized = true;
         _rOwned[owner()] = _rTotal;
         emit Transfer(ZERO, owner(), _tTotal);
+
         _approve(address(this), address(dexRouter), type(uint256).max);
+
         _transfer(owner(), address(this), balanceOf(owner()));
+
         dexRouter.addLiquidityETH{value: address(this).balance}(
             address(this),
             balanceOf(address(this)),
@@ -394,6 +402,7 @@ contract Token is Context, IERC20Upgradeable {
         );
         Launched = block.number;
 
+        require(!tradingEnabled, "Trading already enabled!");
         setExcludedFromReward(address(this), true);
         setExcludedFromReward(lpPair, true);
 
@@ -401,7 +410,14 @@ contract Token is Context, IERC20Upgradeable {
         swapAndLiquifyEnabled = true;
     }
 
-    receive() external payable {}
+    function enableTrade() public onlyOwner {
+        require(!tradingEnabled, "Trading already enabled!");
+        setExcludedFromReward(address(this), true);
+        setExcludedFromReward(lpPair, true);
+
+        tradingEnabled = true;
+        swapAndLiquifyEnabled = true;
+    }
 
 //===============================================================================================================
 //===============================================================================================================
